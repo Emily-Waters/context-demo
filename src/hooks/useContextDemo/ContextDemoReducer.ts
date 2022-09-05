@@ -1,4 +1,4 @@
-enum D {
+enum DispatchTypes {
   INIT = "INIT",
   INCREMENT = "INCREMENT",
 }
@@ -6,39 +6,39 @@ enum D {
 export class DispatchHelpers {
   private dispatch;
 
-  constructor(dispatch: Dispatch) {
+  constructor(dispatch: Dispatch<DispatchTypes>) {
     this.dispatch = dispatch;
   }
 
-  public incrementKey = (key: KeyOfS) => {
-    this.dispatch({ type: D.INCREMENT, payload: key });
+  public incrementKey: IncrementKey<ContextDemoState> = (key) => {
+    this.dispatch({ type: DispatchTypes.INCREMENT, payload: key });
   };
 }
 
 export class Initializer {
   private dispatch;
 
-  constructor(dispatch: Dispatch) {
+  constructor(dispatch: Dispatch<DispatchTypes>) {
     this.dispatch = dispatch;
     this.init();
   }
 
   private init = () => {
-    const dispatch = { ...new DispatchHelpers(this.dispatch) };
-    this.dispatch({ type: D.INIT, payload: dispatch });
+    const dispatch: Spread<DispatchHelpers> = { ...new DispatchHelpers(this.dispatch) };
+    this.dispatch({ type: DispatchTypes.INIT, payload: dispatch });
   };
 }
 
 export class ContextDemoReducer {
-  public REDUCER: Reducer = (state, action) => {
+  public REDUCER: Reducer<ContextDemoState, DispatchTypes> = (state, action) => {
     return this[action.type](state, action.payload);
   };
 
-  private [D.INIT]: Handler<InitPayload> = (state, payload) => {
+  private [DispatchTypes.INIT]: Handler<ContextDemoState, InitPayload> = (state, payload) => {
     return { ...state, dispatch: payload };
   };
 
-  private [D.INCREMENT]: Handler<IncrementPayload> = (state, payload) => {
+  private [DispatchTypes.INCREMENT]: Handler<ContextDemoState, IncrementPayload> = (state, payload) => {
     return { ...state, [payload]: state[payload] + 1 };
   };
 }

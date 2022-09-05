@@ -18,11 +18,12 @@ export const AppContextContainer = () => {
   const { incrementKey } = useDispatch();
 
   const components = [stateKeyOne, stateKeyTwo, stateKeyThree].map((value, index) => {
-    const name = "stateKey" + ((!index && "One") || (index === 1 && "Two") || (index === 2 && "Three"));
+    const keyNum = (!index && "One") || (index === 1 && "Two") || ((index === 2 && "Three") as string);
+    const name = `stateKey${keyNum}` as StateKey;
 
     return (
       <span style={spanStyle} key={name}>
-        <button onClick={() => incrementKey(name as keyof S)} style={{ marginRight: "20px" }}>
+        <button onClick={() => incrementKey(name)} style={{ marginRight: "20px" }}>
           Increment
         </button>
         <StateKeyMemo value={value} name={name} />

@@ -1,40 +1,23 @@
-declare type ContextDemoState = {
+type ContextDemoState = {
   stateKeyOne: number;
   stateKeyTwo: number;
   stateKeyThree: number;
   dispatch: Spread<DispatchHelpers>;
 };
 
-enum D {
-  INIT = "INIT",
-  INCREMENT = "INCREMENT",
-}
+type StateKey = keyof Omit<ContextDemoState, "dispatch">;
 
-type S = ContextDemoState;
-type KeyOfS = keyof S;
-type KeyOfD = keyof D;
+type DispatchAction<T> = { type: T; payload: any };
+type Dispatch<T> = (action: DispatchAction<T>) => void;
 
-declare class DispatchHelpers {
-  private dispatch;
+type Reducer<S, T> = (state: S, action: DispatchAction<T>) => S;
+type Handler<S, P> = (state: S, payload: P) => S;
 
-  constructor(dispatch: Dispatch) {
-    this.dispatch = dispatch;
-  }
-
-  public incrementKey = (key: KeyOfS) => {
-    this.dispatch({ type: D.INCREMENT, payload: key });
-  };
-}
-
-type DispatchAction = { type: D; payload: any };
-type Dispatch = (action: DispatchAction) => void;
-
-type Reducer = (state: S, action: DispatchAction) => S;
-type Handler<P> = (state: S, payload: P) => S;
+type IncrementKey<S> = (key: keyof S) => void;
 
 type InitPayload = Spread<DispatchHelpers>;
-type IncrementPayload = keyof Omit<S, "dispatch">;
+type IncrementPayload = keyof Omit<ContextDemoState, "dispatch">;
 type Spread<T> = { [K in keyof T]: T[K] };
 
-type AppContextProviderProps = { state: S; children: any };
+type AppContextProviderProps = { state: ContextDemoState; children: any };
 type StateKeyComponentProps = { value: number; name: string };
